@@ -16,7 +16,7 @@ sudo reboot
 # Parallels Tools Installation: two options, but I used this
 # Use Menubar: Menubar → Actions → Install Parallels Tools
 # Install via shell
-cd /media/bu/Parallels\ Tools/
+cd /media/USERNAME/Parallels\ Tools/
 sudo ./install
 sudo reboot
 ```
@@ -130,9 +130,17 @@ A ROS 2 workspace is a directory containing ROS 2 packages. We'll create an amen
 **⚠️ Warning**: This will delete any existing ~/ament_ws directory. Back up important files first.
 
 ```bash
-# For AMD 64 Download and run the workspace setup script
-curl -sL https://raw.githubusercontent.com/hello-robot/stretch_ros2/refs/heads/humble/stretch_simulation/stretch_create_ament_workspace.sh > /tmp/stretch_create_ament_workspace.sh
+# For AMR64 Download (my custom script, it's different from default doc)
+curl -sL https://raw.githubusercontent.com/Yuujiso/HelloRobotROS2Mujoco/34fc3bff96adbf68c01d4435ccecaa2167673f1b/stretch_create_ament_workspace.sh > /tmp/stretch_create_ament_workspace.sh
+```
 
+```bash
+# For AMD64 Download (default doc script)
+curl -sL https://raw.githubusercontent.com/hello-robot/stretch_ros2/refs/heads/humble/stretch_simulation/stretch_create_ament_workspace.sh > /tmp/stretch_create_ament_workspace.sh
+```
+
+```bash
+# Run the workspace setup script
 bash /tmp/stretch_create_ament_workspace.sh
 
 # Add ROS 2 environment to your shell profile (optional but recommended)
@@ -162,9 +170,6 @@ URDF (Unified Robot Description Format) files describe the robot's physical stru
 # Source the ROS 2 environment
 source ~/ament_ws/install/setup.bash
 
-# Install Stretch URDF tools
-python3 -m pip install -U hello-robot-stretch-urdf
-
 # Download URDF repository
 git clone https://github.com/hello-robot/stretch_urdf.git --depth 1 /tmp/stretch_urdf
 
@@ -172,7 +177,7 @@ git clone https://github.com/hello-robot/stretch_urdf.git --depth 1 /tmp/stretch
 python3 -m pip install hello-robot-stretch-body
 ```
 
-Edit the /tmp/stretch_urdf/tools/stretch_urdf_ros_update.py file to initialize Variables
+Edit the /tmp/stretch_urdf/tools/stretch_urdf_ros_update.py file to initialize Variables or run script with params `--model 'SE3' --tool 'eoa_wrist_dw3_tool_sg3_pro'`
 
 ```py
 ############## Initialize Variables #####################
@@ -187,11 +192,15 @@ data_dir = None
 
 ```bash
 # ++++++ Maybe?
+cd /tmp/stretch_urdf
+python3 urdf_generate.py
 python3 /tmp/stretch_urdf/urdf_generate.py
 
+# KeyError: 'HELLO_FLEET_PATH' open new terminal
+
 # Update URDF files for ROS 2
-python3 /tmp/stretch_urdf/tools/stretch_urdf_ros_update.py
-python3 /tmp/stretch_urdf/tools/stretch_urdf_ros_update.py --ros2_rebuild
+python3 /tmp/stretch_urdf/tools/stretch_urdf_ros_update.py  --model 'SE3' --tool 'eoa_wrist_dw3_tool_sg3_pro'
+python3 /tmp/stretch_urdf/tools/stretch_urdf_ros_update.py  --ros2_rebuild --model 'SE3' --tool 'eoa_wrist_dw3_tool_sg3_pro'
 ```
 
 **Expected output**: You should see URDF files in the stretch_description package:
@@ -243,6 +252,12 @@ pip install numpy==1.23.3
 
 # Download the Kitchen scene if you have not
 python3 ~/ament_ws/src/stretch_ros2/stretch_simulation/stretch_mujoco_driver/dependencies/stretch_mujoco/third_party/robocasa/robocasa/scripts/download_kitchen_assets.py
+
+python3 ~/ament_ws/src/stretch_ros2/stretch_simulation/stretch_mujoco_driver/dependencies/stretch_mujoco/third_party/robocasa/robocasa/scripts/setup_macros.py
+
+pip install robosuite_models
+
+pip install robomimic
 
 # Launch the simulation in navigation mode
 ros2 launch stretch_simulation stretch_mujoco_driver.launch.py mode:=navigation
