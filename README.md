@@ -83,9 +83,6 @@ sudo apt update && sudo apt install curl -y
 # Add ROS 2 official repository
 sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 
-# ++++++++++++
-sudo apt update
-
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
 
 
@@ -194,11 +191,12 @@ data_dir = None
 # ++++++ Maybe?
 cd /tmp/stretch_urdf
 python3 urdf_generate.py
-python3 /tmp/stretch_urdf/urdf_generate.py
 
 # KeyError: 'HELLO_FLEET_PATH' open new terminal
+source ~/ament_ws/install/setup.bash
 
 # Update URDF files for ROS 2
+
 python3 /tmp/stretch_urdf/tools/stretch_urdf_ros_update.py  --model 'SE3' --tool 'eoa_wrist_dw3_tool_sg3_pro'
 python3 /tmp/stretch_urdf/tools/stretch_urdf_ros_update.py  --ros2_rebuild --model 'SE3' --tool 'eoa_wrist_dw3_tool_sg3_pro'
 ```
